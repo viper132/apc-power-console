@@ -1,0 +1,181 @@
+/* ==========================================================================
+   THEME DEFINITIONS: MODULAR TOKEN SYSTEM
+   Clean, High-Contrast, Anti-AI Slop.
+   Supports:
+     - Views: Gaming (Reactor Core) & Formal (Standard Enterprise UPS)
+     - Color Modes: Dark Mode & Light Mode
+     - 12-RGB Accent Presets (for Gaming View)
+   ========================================================================== */
+
+:root {
+  --font-mono: 'JetBrains Mono', 'Departure Mono', 'Cascadia Code', 'Consolas', monospace;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ==========================================================================
+   1. UNIVERSAL — DARK MODE (Default Cyber-Mechanical Aesthetic)
+   ========================================================================== */
+body[data-color-mode="dark"] {
+  --bg-primary: #07090d;
+  --bg-surface: #0e121a;
+  --bg-surface-elevated: #151b26;
+  --bg-surface-sunken: #090c12;
+  
+  --border-subtle: #1c2433;
+  --border-medium: #2a374c;
+  --border-strong: #3d506e;
+  
+  --text-primary: #f0f4fa;
+  --text-secondary: #94a3b8;
+  --text-muted: #52637a;
+  
+  --accent: #00f0ff;
+  --accent-dim: rgba(0, 240, 255, 0.15);
+  --accent-glow: rgba(0, 240, 255, 0.35);
+  --accent-border: rgba(0, 240, 255, 0.5);
+
+  --status-online: #10b981;
+  --status-online-glow: rgba(16, 185, 129, 0.3);
+  --status-battery: #f59e0b;
+  --status-battery-glow: rgba(245, 158, 11, 0.3);
+  --status-danger: #ef4444;
+  --status-danger-glow: rgba(239, 68, 68, 0.4);
+  --status-avr: #3b82f6;
+  --status-avr-glow: rgba(59, 130, 246, 0.3);
+
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --panel-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.65);
+}
+
+/* ==========================================================================
+   2. UNIVERSAL — LIGHT MODE (High-Tech White / Silver Chassis)
+   ========================================================================== */
+body[data-color-mode="light"] {
+  --bg-primary: #f0f3f8;
+  --bg-surface: #ffffff;
+  --bg-surface-elevated: #f8fafc;
+  --bg-surface-sunken: #e5eaf2;
+  
+  --border-subtle: #d6e0ed;
+  --border-medium: #b4c4d9;
+  --border-strong: #8ba2c2;
+  
+  --text-primary: #0a111e;
+  --text-secondary: #475569;
+  --text-muted: #8092a8;
+  
+  --accent: #0284c7;
+  --accent-dim: rgba(2, 132, 199, 0.12);
+  --accent-glow: rgba(2, 132, 199, 0.25);
+  --accent-border: rgba(2, 132, 199, 0.4);
+
+  --status-online: #059669;
+  --status-online-glow: rgba(5, 150, 105, 0.2);
+  --status-battery: #d97706;
+  --status-battery-glow: rgba(217, 119, 6, 0.2);
+  --status-danger: #dc2626;
+  --status-danger-glow: rgba(220, 38, 38, 0.25);
+  --status-avr: #2563eb;
+  --status-avr-glow: rgba(37, 99, 235, 0.2);
+
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --panel-shadow: 0 4px 18px -2px rgba(15, 23, 42, 0.08);
+}
+
+/* ==========================================================================
+   3. STANDARD VIEW — DARK MODE (Standard Enterprise Server Room / Industrial)
+   Clean DIN-spec slate, structured engineering grid, calm corporate accents
+   ========================================================================== */
+body[data-view="standard"][data-color-mode="dark"] {
+  --bg-primary: #0f1217;
+  --bg-surface: #171b22;
+  --bg-surface-elevated: #202630;
+  --bg-surface-sunken: #0b0d11;
+  
+  --border-subtle: #29313d;
+  --border-medium: #3a4556;
+  --border-strong: #505e75;
+  
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #5e6d82;
+  
+  --accent: #008952; /* Schneider Electric signature corporate green */
+  --accent-dim: rgba(0, 137, 82, 0.15);
+  --accent-glow: rgba(0, 137, 82, 0.3);
+  --accent-border: rgba(0, 137, 82, 0.5);
+
+  --status-online: #008952;
+  --status-online-glow: rgba(0, 137, 82, 0.25);
+  --status-battery: #d97706;
+  --status-battery-glow: rgba(217, 119, 6, 0.25);
+  --status-danger: #dc2626;
+  --status-danger-glow: rgba(220, 38, 38, 0.3);
+  --status-avr: #0284c7;
+  --status-avr-glow: rgba(2, 132, 199, 0.25);
+
+  --radius-sm: 2px;
+  --radius-md: 3px;
+  --radius-lg: 4px;
+  --panel-shadow: none;
+}
+
+/* ==========================================================================
+   4. STANDARD VIEW — LIGHT MODE (Clean Technical Data Sheet / Standard Web)
+   Crisp enterprise white, sharp borders, high legibility
+   ========================================================================== */
+body[data-view="standard"][data-color-mode="light"] {
+  --bg-primary: #f3f5f8;
+  --bg-surface: #ffffff;
+  --bg-surface-elevated: #f8fafc;
+  --bg-surface-sunken: #eaedf2;
+  
+  --border-subtle: #d2d8e2;
+  --border-medium: #b0bac9;
+  --border-strong: #7b899e;
+  
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  
+  --accent: #008952; /* Schneider Electric corporate green */
+  --accent-dim: rgba(0, 137, 82, 0.12);
+  --accent-glow: rgba(0, 137, 82, 0.2);
+  --accent-border: rgba(0, 137, 82, 0.4);
+
+  --status-online: #008952;
+  --status-online-glow: rgba(0, 137, 82, 0.15);
+  --status-battery: #b45309;
+  --status-battery-glow: rgba(180, 83, 9, 0.15);
+  --status-danger: #b91c1c;
+  --status-danger-glow: rgba(185, 28, 28, 0.2);
+  --status-avr: #0369a1;
+  --status-avr-glow: rgba(3, 105, 161, 0.15);
+
+  --radius-sm: 2px;
+  --radius-md: 3px;
+  --radius-lg: 4px;
+  --panel-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* ==========================================================================
+   12 APC REACTOR COLOR PRESETS (Active in Gaming View)
+   ========================================================================== */
+body[data-view="gaming"][data-accent-color="cyan"]    { --accent: #00f0ff; --accent-dim: rgba(0, 240, 255, 0.15); --accent-glow: rgba(0, 240, 255, 0.35); --accent-border: rgba(0, 240, 255, 0.5); }
+body[data-view="gaming"][data-accent-color="violet"]  { --accent: #a855f7; --accent-dim: rgba(168, 85, 247, 0.15); --accent-glow: rgba(168, 85, 247, 0.35); --accent-border: rgba(168, 85, 247, 0.5); }
+body[data-view="gaming"][data-accent-color="amber"]   { --accent: #ffaa00; --accent-dim: rgba(255, 170, 0, 0.15); --accent-glow: rgba(255, 170, 0, 0.35); --accent-border: rgba(255, 170, 0, 0.5); }
+body[data-view="gaming"][data-accent-color="green"]   { --accent: #10b981; --accent-dim: rgba(16, 185, 129, 0.15); --accent-glow: rgba(16, 185, 129, 0.35); --accent-border: rgba(16, 185, 129, 0.5); }
+body[data-view="gaming"][data-accent-color="crimson"] { --accent: #ef4444; --accent-dim: rgba(239, 68, 68, 0.15); --accent-glow: rgba(239, 68, 68, 0.35); --accent-border: rgba(239, 68, 68, 0.5); }
+body[data-view="gaming"][data-accent-color="arctic"]  { --accent: #38bdf8; --accent-dim: rgba(56, 189, 248, 0.15); --accent-glow: rgba(56, 189, 248, 0.35); --accent-border: rgba(56, 189, 248, 0.5); }
+body[data-view="gaming"][data-accent-color="solar"]   { --accent: #eab308; --accent-dim: rgba(234, 179, 8, 0.15); --accent-glow: rgba(234, 179, 8, 0.35); --accent-border: rgba(234, 179, 8, 0.5); }
+body[data-view="gaming"][data-accent-color="pink"]    { --accent: #ec4899; --accent-dim: rgba(236, 72, 153, 0.15); --accent-glow: rgba(236, 72, 153, 0.35); --accent-border: rgba(236, 72, 153, 0.5); }
+body[data-view="gaming"][data-accent-color="cobalt"]  { --accent: #3b82f6; --accent-dim: rgba(59, 130, 246, 0.15); --accent-glow: rgba(59, 130, 246, 0.35); --accent-border: rgba(59, 130, 246, 0.5); }
+body[data-view="gaming"][data-accent-color="emerald"] { --accent: #059669; --accent-dim: rgba(5, 150, 105, 0.15); --accent-glow: rgba(5, 150, 105, 0.35); --accent-border: rgba(5, 150, 105, 0.5); }
+body[data-view="gaming"][data-accent-color="orange"]  { --accent: #f97316; --accent-dim: rgba(249, 115, 22, 0.15); --accent-glow: rgba(249, 115, 22, 0.35); --accent-border: rgba(249, 115, 22, 0.5); }
+body[data-view="gaming"][data-accent-color="white"]   { --accent: #94a3b8; --accent-dim: rgba(148, 163, 184, 0.15); --accent-glow: rgba(148, 163, 184, 0.35); --accent-border: rgba(148, 163, 184, 0.5); }

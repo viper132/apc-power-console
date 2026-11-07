@@ -1,0 +1,485 @@
+/* ==========================================================================
+   STANDARD ENTERPRISE UPS INTERFACE STYLING
+   Authentic IT Management & APC EcoStruxure / Web Management Card Aesthetic
+   100% distinct from Gaming Cockpit: Tabular, Structured, Professional
+   ========================================================================== */
+
+.standard-interface {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  width: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  color: var(--std-text-primary);
+}
+
+/* ==========================================================================
+   STANDARD THEME TOKENS (Scoped Variables)
+   ========================================================================== */
+body[data-color-mode="dark"] {
+  --std-bg-card: #161a22;
+  --std-bg-card-sub: #1e2430;
+  --std-bg-sunken: #0d1117;
+  --std-border: #30363d;
+  --std-border-subtle: #21262d;
+  --std-text-primary: #e6edf3;
+  --std-text-secondary: #8b949e;
+  --std-text-muted: #6e7681;
+  --std-accent: #008952; /* Schneider Electric Corporate Green */
+  --std-accent-bg: rgba(0, 137, 82, 0.15);
+  --std-status-good: #238636;
+  --std-status-good-bg: rgba(35, 134, 54, 0.15);
+  --std-status-warn: #d29922;
+  --std-status-warn-bg: rgba(210, 153, 34, 0.15);
+  --std-status-crit: #f85149;
+  --std-status-crit-bg: rgba(248, 81, 73, 0.15);
+}
+
+body[data-color-mode="light"] {
+  --std-bg-card: #ffffff;
+  --std-bg-card-sub: #f6f8fa;
+  --std-bg-sunken: #edf2f7;
+  --std-border: #d0d7de;
+  --std-border-subtle: #e1e4e8;
+  --std-text-primary: #1f2328;
+  --std-text-secondary: #57606a;
+  --std-text-muted: #6e7781;
+  --std-accent: #008952;
+  --std-accent-bg: rgba(0, 137, 82, 0.1);
+  --std-status-good: #1a7f37;
+  --std-status-good-bg: #dafbe1;
+  --std-status-warn: #9a6700;
+  --std-status-warn-bg: #fff8c5;
+  --std-status-crit: #cf222e;
+  --std-status-crit-bg: #ffebe9;
+}
+
+/* ==========================================================================
+   TOP ENTERPRISE STATUS BANNER
+   ========================================================================== */
+.std-status-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.25rem;
+  background: var(--std-status-good-bg);
+  border: 1px solid var(--std-status-good);
+  border-radius: 6px;
+  transition: all var(--transition-normal);
+}
+
+.std-status-banner.warning {
+  background: var(--std-status-warn-bg);
+  border-color: var(--std-status-warn);
+}
+
+.std-status-banner.critical {
+  background: var(--std-status-crit-bg);
+  border-color: var(--std-status-crit);
+}
+
+.std-banner-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.std-banner-icon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--std-status-good);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.std-status-banner.warning .std-banner-icon {
+  background: var(--std-status-warn);
+}
+.std-status-banner.critical .std-banner-icon {
+  background: var(--std-status-crit);
+}
+
+.std-banner-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--std-text-primary);
+}
+
+.std-banner-desc {
+  font-size: 0.75rem;
+  color: var(--std-text-secondary);
+}
+
+.std-banner-meta {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--std-text-secondary);
+  text-align: right;
+}
+
+/* ==========================================================================
+   STANDARD NAVIGATION TABS (Enterprise Structure)
+   ========================================================================== */
+.std-tab-nav {
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--border-medium);
+  padding-bottom: 2px;
+  overflow-x: auto;
+}
+
+.std-tab-btn {
+  padding: 0.65rem 1.15rem;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text-secondary);
+  font-size: 0.86rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.std-tab-btn:hover {
+  color: var(--text-primary);
+  background: var(--accent-dim);
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+}
+
+.std-tab-btn.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  font-weight: 700;
+}
+
+/* ==========================================================================
+   STANDARD TAB PANELS
+   ========================================================================== */
+.std-tab-pane {
+  display: none;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.std-tab-pane.active {
+  display: flex;
+}
+
+/* ==========================================================================
+   KPI SUMMARY CARDS (Top of Overview)
+   ========================================================================== */
+.std-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.std-kpi-card {
+  background: var(--std-bg-card);
+  border: 1px solid var(--std-border);
+  border-radius: 6px;
+  padding: 1.15rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.std-kpi-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.std-kpi-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--std-text-muted);
+}
+
+.std-kpi-badge {
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--std-status-good-bg);
+  color: var(--std-status-good);
+}
+
+.std-kpi-body {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.std-kpi-value {
+  font-family: var(--font-mono);
+  font-size: 2.1rem;
+  font-weight: 700;
+  color: var(--std-text-primary);
+  line-height: 1;
+}
+
+.std-kpi-unit {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--std-text-secondary);
+}
+
+.std-kpi-bar {
+  width: 100%;
+  height: 6px;
+  background: var(--std-bg-card-sub);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.std-kpi-fill {
+  height: 100%;
+  background: var(--std-accent);
+  transition: width 0.3s ease;
+}
+
+.std-kpi-footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  color: var(--std-text-secondary);
+}
+
+/* ==========================================================================
+   ENTERPRISE POWER DATA MATRIX TABLE
+   ========================================================================== */
+.std-card {
+  background: var(--std-bg-card);
+  border: 1px solid var(--std-border);
+  border-radius: 6px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.std-card-title {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--std-text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.std-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+  text-align: left;
+}
+
+.std-data-table th {
+  padding: 8px 12px;
+  background: var(--std-bg-card-sub);
+  border-bottom: 1px solid var(--std-border);
+  color: var(--std-text-secondary);
+  font-weight: 600;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.std-data-table td {
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--std-border-subtle);
+  color: var(--std-text-primary);
+}
+
+.std-data-table tr:last-child td {
+  border-bottom: none;
+}
+
+.std-data-table tr:hover td {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+body[data-color-mode="dark"] .std-data-table tr:hover td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.std-mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   SWITCHED OUTLET GROUPS (Page 8 in BGM2200 Manual)
+   ========================================================================== */
+.std-outlet-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.std-outlet-card {
+  background: var(--std-bg-card-sub);
+  border: 1px solid var(--std-border);
+  border-radius: 6px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.std-outlet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.std-outlet-name {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--std-text-primary);
+}
+
+.std-switch-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  color: var(--std-text-secondary);
+}
+
+.switch-pill {
+  width: 36px;
+  height: 20px;
+  background: var(--std-border);
+  border-radius: 10px;
+  position: relative;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.switch-pill.on {
+  background: var(--std-accent);
+}
+
+.switch-knob {
+  width: 16px;
+  height: 16px;
+  background: #ffffff;
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: transform var(--transition-fast);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+.switch-pill.on .switch-knob {
+  transform: translateX(16px);
+}
+
+/* ==========================================================================
+   SHUTDOWN POLICY FORM CONTROLS
+   ========================================================================== */
+.std-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--std-border-subtle);
+}
+
+.std-form-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--std-text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.std-form-desc {
+  font-size: 0.72rem;
+  color: var(--std-text-muted);
+}
+
+.std-input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.std-input-number {
+  width: 80px;
+  padding: 5px 8px;
+  background: var(--std-bg-card);
+  border: 1px solid var(--std-border);
+  border-radius: 4px;
+  color: var(--std-text-primary);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+}
+
+.std-btn-save {
+  align-self: flex-start;
+  padding: 7px 16px;
+  background: var(--std-accent);
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: opacity var(--transition-fast);
+}
+
+.std-btn-save:hover {
+  opacity: 0.9;
+}
+
+.std-input-text {
+  padding: 6px 10px;
+  background: var(--std-bg-card);
+  border: 1px solid var(--std-border);
+  border-radius: 4px;
+  color: var(--std-text-primary);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  box-sizing: border-box;
+}
+
+.std-filter-btn {
+  padding: 4px 10px;
+  border: 1px solid var(--std-border);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--std-text-secondary);
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.std-filter-btn:hover {
+  background: var(--std-bg-card-sub);
+  color: var(--std-text-primary);
+}
+
+.std-filter-btn.active {
+  background: var(--std-accent);
+  color: #ffffff;
+  border-color: var(--std-accent);
+}

@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>APC Universal Power Management Console</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="icon" type="image/png" href="assets/icon.png">
+  <link rel="stylesheet" href="css/themes.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/standard.css">
+  <link rel="stylesheet" href="css/reactor3d.css">
+</head>
+<body data-color-mode="dark" data-accent-color="cyan">
+
+  <!-- ==========================================================================
+       UNIFIED APC UNIVERSAL POWER MANAGEMENT CONSOLE
+       One Integrated Interface: 3D Live Dashboard, Telemetry Matrix, Diagnostics, Policies, Logs
+       ========================================================================== -->
+  <div id="unifiedInterface" class="view-interface unified-interface">
+    
+    <!-- Top Application Header -->
+    <header class="app-header">
+      <div class="header-brand">
+        <div class="brand-titles" style="flex-direction:row; align-items:center; gap:8px;">
+          <span style="font-weight:800; font-size:1.05rem; letter-spacing:0.02em; color:var(--text-primary);">APC</span>
+          <span style="color:var(--border-strong); font-size:0.85rem;">/</span>
+          <span id="headerBrandTitle" style="font-weight:600; font-size:0.95rem; color:var(--text-primary);">Universal Power Console</span>
+          <span id="headerModelVal" style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-secondary); margin-left:4px;">Back-UPS BGM2200-MSX</span>
+        </div>
+        <div class="comm-status" style="padding: 2px 8px;" title="Status Komunikasi USB Data Port">
+          <span class="comm-dot"></span>
+          <span style="font-size:0.68rem; font-weight:600;">USB-HID LINKED</span>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <span id="stdUptimeVal" style="font-size: 0.75rem; color: var(--text-secondary); font-family: var(--font-mono); margin-right: 8px;">
+          UPTIME: --
+        </span>
+
+        <!-- Dark / Light Mode Switcher -->
+        <div class="segmented-pill-wrap" title="Switch Color Theme">
+          <button class="pill-btn active" data-mode-btn="dark">🌙 DARK</button>
+          <button class="pill-btn" data-mode-btn="light">☀️ LIGHT</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Global System Status Ribbon -->
+    <div id="stdStatusBanner" class="std-status-banner">
+      <div class="std-banner-left">
+        <div id="stdBannerIcon" class="std-banner-icon">✓</div>
+        <div>
+          <div id="stdBannerTitle" class="std-banner-title">Normal Operation — Utility Power Acceptable</div>
+          <div id="stdBannerDesc" class="std-banner-desc">Line voltage and frequency are within nominal specification. Battery fully charged.</div>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <button id="btnAbortEmergency" style="display: none; background: #dc2626; color: white; border: none; padding: 6px 14px; border-radius: 4px; font-weight: 700; font-size: 0.8rem; cursor: pointer; letter-spacing: 0.05em;">⛔ ABORT COUNTDOWN</button>
+        <div class="std-banner-meta" id="stdBannerMeta">
+          <div>COMMUNICATION: USB HID NATIVE</div>
+          <div>FIRMWARE: <span id="stdFirmwareVal">481600G4-481700G1</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Unified Console Navigation Tabs -->
+    <nav class="std-tab-nav">
+      <button class="std-tab-btn active" data-tab="tab-dashboard">🖥️ 3D Reactor Dashboard</button>
+      <button class="std-tab-btn" data-tab="tab-overview">📊 Telemetry Matrix</button>
+      <button class="std-tab-btn" data-tab="tab-energy">⚡ Energy &amp; Cost</button>
+      <button class="std-tab-btn" data-tab="tab-battery">🔋 Battery &amp; Diagnostics</button>
+      <button class="std-tab-btn" data-tab="tab-shutdown">⚙️ Shutdown Policies</button>
+      <button class="std-tab-btn" data-tab="tab-events">📋 Event Log</button>
+    </nav>
+
+    <!-- ==================== TAB 1: 3D REACTOR DASHBOARD ==================== -->
+    <div id="tab-dashboard" class="std-tab-pane active">
+      <!-- IMMERSIVE 3D CYBER REACTOR COCKPIT -->
+      <main class="cyber-cockpit-stage">
+        <!-- Segmented Mode Bar for 3D Readout -->
+        <div class="cockpit-mode-bar">
+          <button class="pill-btn active" data-core-mode="load" style="font-size: 0.65rem; padding: 3px 10px;">⚡ LOAD (W)</button>
+          <button class="pill-btn" data-core-mode="battery" style="font-size: 0.65rem; padding: 3px 10px;">🔋 BATT (%)</button>
+          <button class="pill-btn" data-core-mode="runtime" style="font-size: 0.65rem; padding: 3px 10px;">⏱️ RUNTIME (MIN)</button>
+        </div>
+
+        <!-- Three.js Hardware Accelerated WebGL Canvas -->
+        <canvas id="reactor3DCanvas" class="reactor-3d-canvas"></canvas>
+
+        <!-- Center Floating Holographic Readout -->
+        <div id="reactorCoreHolo" class="core-holo-readout" title="Display Mode: Watts • Percent • Runtime">
+          <div class="core-holo-badge">
+            <span class="dot"></span>
+            <span id="coreHoloBadgeLabel">LOAD POWER</span>
+          </div>
+          <div class="core-holo-val-row">
+            <span id="coreHoloVal" class="core-holo-val">132</span>
+            <span id="coreHoloUnit" class="core-holo-unit">W</span>
+          </div>
+          <div id="coreHoloSub" class="core-holo-sub">10.0% OF 1320W • 50 Hz</div>
+        </div>
+
+        <!-- Pod 1: Top-Left (Grid Input & AVR) -->
+        <div class="hud-pod top-left">
+          <div class="pod-header">
+            <span class="pod-label">⚡ GRID MAINS</span>
+            <span id="podAvrDot" class="pod-status-dot"></span>
+          </div>
+          <div class="pod-value-wrap">
+            <span id="podGridVolt" class="pod-value">214.0</span>
+            <span class="pod-unit">VAC</span>
+          </div>
+          <div id="podGridSub" class="pod-subtext">50.0 Hz • AVR NORMAL</div>
+        </div>
+
+        <!-- Pod 2: Top-Right (Battery & Float) -->
+        <div class="hud-pod top-right">
+          <div class="pod-header">
+            <span class="pod-label">🔋 BATTERY</span>
+            <span class="pod-status-dot"></span>
+          </div>
+          <div class="pod-value-wrap">
+            <span id="podBattPct" class="pod-value">100%</span>
+          </div>
+          <div id="podBattSub" class="pod-subtext">42 MIN • 27.6 VDC FLOAT</div>
+        </div>
+
+        <!-- Pod 3: Bottom-Left (Electricity Cost) -->
+        <div class="hud-pod bottom-left">
+          <div class="pod-header">
+            <span class="pod-label">⚡ ENERGY COST</span>
+          </div>
+          <div class="pod-value-wrap">
+            <span id="podCostHour" class="pod-value">Rp 191</span>
+            <span class="pod-unit">/ Hr</span>
+          </div>
+          <div id="podCostSub" class="pod-subtext">Rp 4,584 / Day (National Rate)</div>
+        </div>
+
+        <!-- Pod 4: Bottom-Right (Action Mode) -->
+        <div id="podGuardAction" class="hud-pod bottom-right" title="Click to toggle between HIBERNATE and SHUTDOWN">
+          <div class="pod-header">
+            <span class="pod-label">🛡️ AUTOMATION</span>
+            <span id="podActionDot" class="pod-status-dot"></span>
+          </div>
+          <div class="pod-value-wrap">
+            <span id="podActionName" class="pod-value">HIBERNATE</span>
+          </div>
+          <div id="podActionSub" class="pod-subtext">Trigger: Batt &le; 20% (Click to toggle)</div>
+        </div>
+      </main>
+
+      <!-- Minimalist Command Dock below 3D Stage -->
+      <div class="cockpit-dock">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span id="dockModelName" style="font-size:0.75rem; font-weight:700; color:var(--text-primary);">APC Universal UPS</span>
+          <span id="dockSerialName" style="font-size:0.65rem; color:var(--text-muted); font-family:var(--font-mono);">SN: --</span>
+        </div>
+
+        <div class="cockpit-dock-actions">
+          <button id="btnSelfTest" class="btn-tactical">🔄 RUN SELF-TEST</button>
+          <button id="btnToggleGuard" class="btn-tactical">🛡️ GUARD: <strong id="guardStatusLabel" style="color:var(--status-online); margin-left:4px;">ARMED (LIVE)</strong></button>
+          <button id="btnFooterBeeper" class="btn-tactical">🔊 AUDIO: <strong id="footerBeeperLabel" style="margin-left:4px;">ON</strong></button>
+          <button id="btnExportLog" class="btn-tactical">📥 EXPORT CSV</button>
+          <button id="btnClearLog" class="btn-tactical" style="color:var(--text-muted);">🗑️ CLEAR LOG</button>
+        </div>
+      </div>
+
+      <!-- Clean Event Log Ticker -->
+      <div class="cockpit-log-drawer">
+        <div class="log-drawer-header">
+          <span>REAL-TIME POWER EVENT TRAIL</span>
+          <span style="font-size:0.62rem; color:var(--accent);">USB-HID LIVE AUDIT</span>
+        </div>
+        <div class="log-table-wrap" style="max-height:110px;">
+          <table class="log-table">
+            <thead>
+              <tr>
+                <th style="width: 100px;">TIMESTAMP</th>
+                <th style="width: 80px;">STATUS</th>
+                <th>POWER EVENT DESCRIPTION</th>
+              </tr>
+            </thead>
+            <tbody id="logTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== TAB 2: TELEMETRY MATRIX ==================== -->
+    <div id="tab-overview" class="std-tab-pane">
+      <!-- 3-Column Enterprise KPI Cards -->
+      <div class="std-kpi-grid">
+        <div class="std-kpi-card">
+          <div class="std-kpi-header">
+            <span class="std-kpi-title">Active Output Load</span>
+            <span id="stdKpiLoadBadge" class="std-kpi-badge">NORMAL</span>
+          </div>
+          <div class="std-kpi-body">
+            <div class="std-kpi-main">
+              <span id="stdKpiLoadVal" class="std-kpi-num">132</span>
+              <span class="std-kpi-unit">Watts</span>
+            </div>
+            <div class="std-kpi-bar-wrap">
+              <div id="stdKpiLoadBar" class="std-kpi-bar" style="width: 10%;"></div>
+            </div>
+            <div class="std-kpi-sub">
+              <span>Apparent: <strong id="stdKpiApparentVal">220 VA</strong></span>
+              <span>Load: <strong id="stdKpiLoadPct">10.0%</strong> / Max <strong id="stdKpiMaxWatts">1320W</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="std-kpi-card">
+          <div class="std-kpi-header">
+            <span class="std-kpi-title">Battery Subsystem</span>
+            <span id="stdKpiBattBadge" class="std-kpi-badge">CHARGED</span>
+          </div>
+          <div class="std-kpi-body">
+            <div class="std-kpi-main">
+              <span id="stdKpiBattVal" class="std-kpi-num">100</span>
+              <span class="std-kpi-unit">% Capacity</span>
+            </div>
+            <div class="std-kpi-bar-wrap">
+              <div id="stdKpiBattBar" class="std-kpi-bar" style="width: 100%;"></div>
+            </div>
+            <div class="std-kpi-sub">
+              <span>Est. Runtime: <strong id="stdKpiRuntimeVal">42 Min</strong></span>
+              <span id="stdKpiBattStatus">Float Charged</span> • <span id="stdKpiDcVoltVal">27.2 VDC</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="std-kpi-card">
+          <div class="std-kpi-header">
+            <span class="std-kpi-title">Utility Grid Input (PLN)</span>
+            <span id="stdKpiGridBadge" class="std-kpi-badge">IN SPEC</span>
+          </div>
+          <div class="std-kpi-body">
+            <div class="std-kpi-main">
+              <span id="stdKpiVoltVal" class="std-kpi-num">214.0</span>
+              <span class="std-kpi-unit">VAC Line</span>
+            </div>
+            <div class="std-kpi-bar-wrap">
+              <div id="stdKpiGridBar" class="std-kpi-bar" style="width: 85%;"></div>
+            </div>
+            <div class="std-kpi-sub">
+              <span>Freq: <strong id="stdKpiFreqVal">50.0 Hz</strong></span>
+              <span id="stdKpiAvrVal">Bypass (Pass-Through)</span> • <span id="stdKpiSourceVal">USB-HID Native</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Power Distribution Matrix Table -->
+      <div class="std-card">
+        <div class="std-card-title">
+          <span>Power Distribution &amp; Inverter Matrix</span>
+          <span style="font-size: 0.72rem; color: var(--std-text-muted);">POLLING INTERVAL: 1200ms</span>
+        </div>
+        <table class="std-data-table">
+          <thead>
+            <tr>
+              <th>Electrical Parameter</th>
+              <th>Mains Utility Input</th>
+              <th>Inverter / Equipment Output</th>
+              <th>Operational Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>AC Voltage (RMS)</strong></td>
+              <td class="std-mono" id="tableInVolt">214.0 VAC</td>
+              <td class="std-mono" id="tableOutVolt">230.0 VAC</td>
+              <td><span style="color: var(--std-status-good); font-weight: 600;">Nominal Regulation</span></td>
+            </tr>
+            <tr>
+              <td><strong>Grid Frequency</strong></td>
+              <td class="std-mono" id="tableInFreq">50.0 Hz</td>
+              <td class="std-mono" id="tableOutFreq">50.0 Hz</td>
+              <td>Phase Locked to Grid</td>
+            </tr>
+            <tr>
+              <td><strong>Real Output Power</strong></td>
+              <td class="std-mono">Supply Active</td>
+              <td class="std-mono" id="tableLoadWatts">132 W / 220 VA (10%)</td>
+              <td>Inverter Ready (Load: Normal)</td>
+            </tr>
+            <tr>
+              <td><strong>Maximum Power Rating</strong></td>
+              <td class="std-mono">230V / 16A Circuit</td>
+              <td class="std-mono" id="tableMaxRating">Max 1320 W / 2200 VA</td>
+              <td>Power Factor 0.60 Nominal</td>
+            </tr>
+            <tr>
+              <td><strong>Automatic Voltage Regulation</strong></td>
+              <td class="std-mono" id="tableAvrState">Pass-through (1:1 Ratio)</td>
+              <td class="std-mono">AVR Solid-State Relays</td>
+              <td>Normal (Boost: &lt;205V, Trim: &gt;245V)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pure Sine Wave Output Real-Time Oscilloscope -->
+      <div class="std-card">
+        <div class="std-card-title">
+          <span>Pure Sine Wave Output (Real-Time Oscilloscope)</span>
+          <span style="font-size: 0.72rem; color: var(--std-text-muted);">60-SAMPLE BUFFER • PURE SINE WAVE INVERTER</span>
+        </div>
+        <div style="background: var(--std-bg-sunken); border: 1px solid var(--std-border); border-radius: 4px; padding: 0.5rem; display: flex; justify-content: center;">
+          <canvas id="waveformCanvas" width="800" height="90" style="width: 100%; max-width: 800px; height: 90px;"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== TAB 3: ENERGY & COST ANALYTICS ==================== -->
+    <div id="tab-energy" class="std-tab-pane">
+      <!-- 4-Card Energy Overview Grid -->
+      <div class="std-kpi-grid">
+        <div class="std-kpi-card">
+          <div class="std-kpi-header">
+            <span class="std-kpi-title">Today Consumed Energy</span>
+            <span class="std-kpi-badge">INTEGRAL kWh</span>
+          </div>
+          <div class="std-kpi-body">
+            <div class="std-kpi-main">
+              <span id="energyTodayKwh" class="std-kpi-num">0.000</span>
+              <span class="std-kpi-unit">kWh</span>
+            </div>
+            <div class="std-kpi-sub">
+              <span>Today Tariff Cost: <strong id="energyTodayCost" style="color: var(--std-text-primary);">Rp 0</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="std-kpi-card">
+          <div class="std-kpi-header">
+            <span class="std-kpi-title">Current Month Accumulation</span>
+            <span class="std-kpi-badge">MONTHLY</span>
+          </div>
+          <div class="std-kpi-body">
+            <div class="std-kpi-main">
+              <span id="energyMonthKwh" class="std-kpi-num">0.00</span>
+              <span class="std-kpi-unit">kWh</span>
+            </div>
+            <div class="std-kpi-sub">
+              <span>Month Cost: <strong id="energyMonthCost" style="color: var(--std-text-primary);">Rp 0</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="std-kpi-card">
+          <div class="std-kpi-header">
+            <span class="std-kpi-title">Session Peak Load Draw</span>
+            <span class="std-kpi-badge">EXTREMES</span>
+          </div>
+          <div class="std-kpi-body">
+            <div class="std-kpi-main">
+              <span id="energyPeakWatts" class="std-kpi-num">0.0</span>
+              <span class="std-kpi-unit">Watts</span>
+            </div>
+            <div class="std-kpi-sub">
+              <span>Grid Range: <strong id="energyMinVolt">230.0</strong>V – <strong id="energyMaxVolt">230.0</strong>V</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="std-kpi-card">
+          <div class="std-kpi-header">
+            <span class="std-kpi-title">Lifetime Recorded Energy</span>
+            <span class="std-kpi-badge">AUDIT</span>
+          </div>
+          <div class="std-kpi-body">
+            <div class="std-kpi-main">
+              <span id="energyLifetimeKwh" class="std-kpi-num">0.00</span>
+              <span class="std-kpi-unit">kWh</span>
+            </div>
+            <div class="std-kpi-sub">
+              <span>Total Est. Cost: <strong id="energyLifetimeCost" style="color: var(--std-text-primary);">Rp 0</strong></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Historical Energy Consumption Table & Peak Reset -->
+      <div class="std-card" style="margin-top: 1rem;">
+        <div class="std-card-title">
+          <span>Historical Daily Power Consumption (Last 14 Days)</span>
+          <button id="btnResetEnergyPeaks" class="std-filter-btn">
+            🔄 Reset Session Extremes
+          </button>
+        </div>
+        <table class="std-data-table">
+          <thead>
+            <tr>
+              <th style="width: 140px;">Date (YYYY-MM-DD)</th>
+              <th style="width: 150px;">Energy Consumed</th>
+              <th style="width: 150px;">Electricity Cost</th>
+              <th style="width: 130px;">Peak Wattage</th>
+              <th>Active Monitored Time</th>
+            </tr>
+          </thead>
+          <tbody id="energyHistoryTableBody">
+            <tr>
+              <td colspan="5" class="std-mono" style="text-align: center; color: var(--std-text-muted); padding: 1.5rem;">
+                Accumulating real-time energy telemetry...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Environmental Impact & Efficiency Card -->
+      <div class="std-card" style="margin-top: 1rem;">
+        <div class="std-card-title">
+          <span>Environmental Impact &amp; Hardware Efficiency Metrics</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; font-size: 0.82rem;">
+          <div style="background: var(--std-bg-card-sub); padding: 0.85rem; border-radius: 4px; border: 1px solid var(--std-border);">
+            <div style="font-weight: 700; color: var(--std-text-primary); margin-bottom: 4px;">🌱 Estimated Carbon Footprint (CO2e)</div>
+            <div style="color: var(--std-text-secondary); margin-bottom: 6px;">Based on standard grid emission factor of 0.85 kg CO2e / kWh:</div>
+            <div style="font-family: var(--font-mono); font-size: 1.1rem; font-weight: 700; color: var(--std-accent);" id="energyCarbonVal">0.00 kg CO2e</div>
+          </div>
+          <div style="background: var(--std-bg-card-sub); padding: 0.85rem; border-radius: 4px; border: 1px solid var(--std-border);">
+            <div style="font-weight: 700; color: var(--std-text-primary); margin-bottom: 4px;">⚖️ Operational Draw Profile</div>
+            <div style="color: var(--std-text-secondary); margin-bottom: 6px;">Idle vs Full Stress benchmark comparison:</div>
+            <div style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--std-text-secondary);">
+              • Idle Workstation (~120W): ~Rp 173 / Hr<br>
+              • Peak Gaming / Render (~500W): ~Rp 722 / Hr
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== TAB 4: BATTERY & DIAGNOSTICS ==================== -->
+    <div id="tab-battery" class="std-tab-pane">
+      <div class="std-card">
+        <div class="std-card-title">
+          <span>Physical Hardware &amp; Battery Telemetry (Direct USB-HID)</span>
+          <button id="stdBtnSelfTest" style="background: var(--std-accent); color: white; border: none; padding: 6px 12px; border-radius: 4px; font-weight: 600; font-size: 0.78rem; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+            <span>🔄</span> Run Diagnostic Self-Test
+          </button>
+        </div>
+        <table class="std-data-table">
+          <thead>
+            <tr>
+              <th>Subsystem Metric</th>
+              <th>Value / Operational Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="width: 35%;">Model &amp; Hardware Chassis</td>
+              <td class="std-mono"><strong id="stdModelVal">APC Universal UPS</strong> <span id="stdChassisVal" style="color: var(--std-text-secondary);">(Tower Form Factor)</span></td>
+            </tr>
+            <tr>
+              <td>Unit Serial Number (USB-HID)</td>
+              <td class="std-mono" id="stdSerialVal">--</td>
+            </tr>
+            <tr>
+              <td>Installed Firmware Version</td>
+              <td class="std-mono" id="stdFirmwareVal2">--</td>
+            </tr>
+            <tr>
+              <td>Manufacturing Date (Report 123)</td>
+              <td class="std-mono" id="stdMfrDateVal">--</td>
+            </tr>
+            <tr>
+              <td>Input Sensitivity (Report 53)</td>
+              <td class="std-mono" id="stdSensitivityVal">--</td>
+            </tr>
+            <tr>
+              <td>Voltage Transfer Limits (Report 50 / 51)</td>
+              <td class="std-mono" id="stdTransferLimitsVal">176.0 VAC (Low) / 298.0 VAC (High)</td>
+            </tr>
+            <tr>
+              <td>Last Transfer Cause (Report 54)</td>
+              <td class="std-mono" id="stdTransferReasonVal">--</td>
+            </tr>
+            <tr>
+              <td>Replacement Battery Cartridge</td>
+              <td class="std-mono" id="stdRbcVal">--</td>
+            </tr>
+            <tr>
+              <td>Nominal Battery String Voltage (Report 37)</td>
+              <td class="std-mono" id="stdNominalVoltVal">24.0 VDC (2x 12V VRLA String)</td>
+            </tr>
+            <tr>
+              <td>Battery Float Voltage (DC)</td>
+              <td class="std-mono" id="stdFloatVoltVal">-- VDC (Temperature Compensated)</td>
+            </tr>
+            <tr>
+              <td>Battery Operational Age</td>
+              <td class="std-mono" id="stdBattAgeVal">--</td>
+            </tr>
+            <tr>
+              <td>Battery Replacement Advisory</td>
+              <td class="std-mono" id="stdBattAdvisoryVal"><span style="color: var(--std-status-good); font-weight: 600;">✓ Healthy Operational Age</span></td>
+            </tr>
+            <tr>
+              <td>Battery Health Status (Bitmask)</td>
+              <td><span id="stdHealthStatusVal" style="color: var(--std-status-good); font-weight: 700;">HEALTHY (100% Operational)</span></td>
+            </tr>
+            <tr>
+              <td>Internal Sensor Temperature</td>
+              <td class="std-mono" id="stdTableTemp">N/A (Consumer Back-UPS model not equipped with thermistor)</td>
+            </tr>
+            <tr>
+              <td>Inverter Waveform Architecture</td>
+              <td id="stdTopologyVal">Line-Interactive, Pure Sine Wave Output</td>
+            </tr>
+            <tr>
+              <td>Rated Power Capacity</td>
+              <td id="stdMaxRatingVal">-- Watts / -- VA</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ==================== TAB 4: SHUTDOWN POLICIES ==================== -->
+    <div id="tab-shutdown" class="std-tab-pane">
+      <div class="std-card">
+        <div class="std-card-title">
+          <span>Graceful Automated OS Protection Policy</span>
+          <span id="policySavedBadge" style="display:none; font-size: 0.72rem; color: var(--std-status-good); font-weight: 600;">✓ Settings Saved</span>
+        </div>
+        <p style="font-size: 0.78rem; color: var(--std-text-secondary);">
+          Automated operating system shutdown and data persistence policy during prolonged utility power failures.
+        </p>
+
+        <div class="std-form-group">
+          <label class="std-form-label">
+            <input type="checkbox" id="policyEnabled" checked>
+            Enable automated Windows emergency protection daemon
+          </label>
+        </div>
+
+        <div class="std-form-group">
+          <label class="std-form-label">
+            <input type="checkbox" id="policyAutostart" checked>
+            Auto-start silently in background on Windows boot (System Tray)
+          </label>
+          <span class="std-form-desc">Automatically launches the background power monitor on Windows startup (can also be toggled via the System Tray context menu).</span>
+        </div>
+
+        <div class="std-form-group">
+          <label class="std-form-label">
+            <input type="checkbox" id="policyCloseToTray" checked>
+            Close to Tray (Keep monitoring in background when window is closed)
+          </label>
+          <span class="std-form-desc">When enabled, clicking the close button (X) minimizes the application to the System Tray to keep protection active. To exit completely, right-click the tray icon and choose Exit.</span>
+        </div>
+
+        <div class="std-form-group">
+          <label class="std-form-label">
+            Emergency Power Action (Official PowerChute Feature):
+          </label>
+          <div class="std-input-row">
+            <select id="policyAction" class="std-input-number" style="width: auto; min-width: 280px; padding: 0.4rem 0.6rem; background: var(--std-input-bg); color: var(--std-text-primary); border: 1px solid var(--std-border);">
+              <option value="hibernate">Hibernate (Preserve active RAM &amp; games to disk, safe power off)</option>
+              <option value="shutdown">Full Shutdown (Graceful OS shutdown /s)</option>
+            </select>
+          </div>
+          <span class="std-form-desc">Hibernate is strongly recommended for gaming and development sessions to restore all open windows upon power recovery.</span>
+        </div>
+
+        <div class="std-form-group">
+          <label class="std-form-label">
+            Utility Electricity Rate per kWh (Energy Cost Calculator):
+          </label>
+          <div class="std-input-row">
+            <span style="font-size: 0.8rem; color: var(--std-text-secondary);">Rp</span>
+            <input type="number" id="policyKwhRate" class="std-input-number" value="1444.7" step="0.1" style="width: 110px;">
+            <span style="font-size: 0.8rem; color: var(--std-text-secondary);">/ kWh (National Tariff R-1 1300VA &amp; 2200VA)</span>
+          </div>
+        </div>
+
+        <div class="std-form-group">
+          <label class="std-form-label">
+            Trigger emergency action when battery runtime falls below:
+          </label>
+          <div class="std-input-row">
+            <input type="number" id="policyMinRuntime" class="std-input-number" value="10" min="1" max="60">
+            <span style="font-size: 0.8rem; color: var(--std-text-secondary);">minutes runtime remaining</span>
+          </div>
+          <span class="std-form-desc">Provides sufficient time buffer for the operating system to flush disk caches safely.</span>
+        </div>
+
+        <div class="std-form-group">
+          <label class="std-form-label">
+            Trigger emergency action when battery capacity drops below:
+          </label>
+          <div class="std-input-row">
+            <input type="number" id="policyMinBattery" class="std-input-number" value="20" min="5" max="90">
+            <span style="font-size: 0.8rem; color: var(--std-text-secondary);">% battery capacity</span>
+          </div>
+        </div>
+
+        <div class="std-form-group">
+          <label class="std-form-label">
+            Trigger emergency action when power outage exceeds:
+          </label>
+          <div class="std-input-row">
+            <input type="number" id="policyOutageMins" class="std-input-number" value="10" min="0" max="180">
+            <span style="font-size: 0.8rem; color: var(--std-text-secondary);">minutes continuous outage (set 0 to disable)</span>
+          </div>
+        </div>
+
+        <div class="std-form-group">
+          <label class="std-form-label">
+            Shutdown countdown warning grace period:
+          </label>
+          <div class="std-input-row">
+            <input type="number" id="policyGraceSecs" class="std-input-number" value="60" min="5" max="300">
+            <span style="font-size: 0.8rem; color: var(--std-text-secondary);">seconds on-screen grace countdown</span>
+          </div>
+        </div>
+
+        <div class="std-form-group">
+          <label class="std-form-label">
+            Pre-Shutdown Script Execution (CommandFileRunner):
+          </label>
+          <div class="std-input-row" style="width: 100%; flex-wrap: wrap;">
+            <input type="text" id="policyPreScript" class="std-input-text" placeholder="e.g. C:\Scripts\stop_containers.bat or .ps1" style="flex: 1; min-width: 260px;">
+            <input type="number" id="policyPreTimeout" class="std-input-number" value="30" min="5" max="120" style="width: 65px;">
+            <span style="font-size: 0.8rem; color: var(--std-text-secondary);">sec timeout</span>
+          </div>
+          <span class="std-form-desc">Executes asynchronously before system hibernate/shutdown (e.g. stops Docker containers, flushes databases, or suspends VMs).</span>
+        </div>
+
+        <div class="std-form-group">
+          <label class="std-form-label">
+            Post-Power Restoration Hook Script:
+          </label>
+          <div class="std-input-row" style="width: 100%; flex-wrap: wrap;">
+            <input type="text" id="policyPostScript" class="std-input-text" placeholder="e.g. C:\Scripts
+estart_services.bat or .ps1" style="flex: 1; min-width: 260px;">
+            <input type="number" id="policyPostDelay" class="std-input-number" value="10" min="5" max="60" style="width: 65px;">
+            <span style="font-size: 0.8rem; color: var(--std-text-secondary);">sec debounce</span>
+          </div>
+          <span class="std-form-desc">Executes after utility power returns and remains consistently stable for the debounce duration (guards against grid flickering).</span>
+        </div>
+
+        <div class="std-form-group">
+          <label class="std-form-label">
+            Battery Installation Date (VRLA Lifecycle Tracker):
+          </label>
+          <div class="std-input-row">
+            <input type="date" id="policyBattDate" class="std-input-text" style="width: 160px;" value="2024-01-03">
+            <span style="font-size: 0.8rem; color: var(--std-text-secondary);">Recorded replacement date (alerts after 36 months of service)</span>
+          </div>
+        </div>
+
+        <button id="btnSaveShutdownPolicy" class="std-btn-save">
+          💾 Save Protection Policy
+        </button>
+      </div>
+    </div>
+
+    <!-- ==================== TAB 6: EVENT LOG ==================== -->
+    <div id="tab-events" class="std-tab-pane">
+      <div class="std-card">
+        <div class="std-card-title">
+          <span>Enterprise System Event Audit Trail</span>
+          <div style="display: flex; gap: 8px;">
+            <button id="btnStdExportLog" style="padding: 4px 10px; background: transparent; border: 1px solid var(--std-border); border-radius: 4px; font-size: 0.72rem; cursor: pointer; color: var(--std-text-secondary);">
+              📥 Export CSV
+            </button>
+            <button id="btnStdClearLog" style="padding: 4px 10px; background: transparent; border: 1px solid var(--std-border); border-radius: 4px; font-size: 0.72rem; cursor: pointer; color: var(--std-text-secondary);">
+              🗑️ Clear Log
+            </button>
+          </div>
+        </div>
+
+        <!-- Filter & Search Bar -->
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 1rem; flex-wrap: wrap;">
+          <div style="display: flex; gap: 6px; align-items: center;">
+            <span style="font-size: 0.75rem; color: var(--std-text-muted); font-weight: 600;">SEVERITY:</span>
+            <button class="std-filter-btn active" data-sev-filter="ALL">ALL</button>
+            <button class="std-filter-btn" data-sev-filter="INFO">INFO</button>
+            <button class="std-filter-btn" data-sev-filter="WARNING">WARN</button>
+            <button class="std-filter-btn" data-sev-filter="CRITICAL">CRITICAL</button>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <input type="text" id="stdEventSearchInput" class="std-input-text" placeholder="Search event history..." style="width: 220px; font-size: 0.75rem; padding: 4px 8px;">
+          </div>
+        </div>
+
+        <table class="std-data-table">
+          <thead>
+            <tr>
+              <th style="width: 140px;">Timestamp</th>
+              <th style="width: 90px;">Severity</th>
+              <th style="width: 140px;">Event Type</th>
+              <th>Detailed Event Description</th>
+            </tr>
+          </thead>
+          <tbody id="stdEventTableBody">
+            <tr id="stdEventEmptyRow">
+              <td class="std-mono" colspan="4" style="text-align: center; color: var(--std-text-muted); padding: 1.5rem;">Connecting to real hardware telemetry stream...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MODERN IN-APP MODAL: HARDWARE SELF-TEST & RELAY DIAGNOSTICS -->
+  <div id="selfTestModal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span>🔄 APC Hardware Relay Self-Test &amp; Diagnostics</span>
+        </div>
+        <button id="btnModalCloseX" class="modal-close-btn">&times;</button>
+      </div>
+
+      <!-- Live USB Execution Section -->
+      <div class="selftest-live-box">
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;">
+          <div>
+            <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 6px;">
+              <span>⚡ Direct USB-HID Hardware Trigger</span>
+              <span class="verified-badge">VERIFIED COMMAND</span>
+            </div>
+            <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 3px;">
+              Executes Report 33 relay cycle: UPS switches to inverter battery for ~10s to evaluate cell health under load.
+            </div>
+          </div>
+          <button id="btnExecuteLiveSelfTest" class="btn-tactical" style="padding: 8px 18px; background: var(--accent); color: var(--bg-primary); font-weight: 800; border: none; border-radius: var(--radius-sm); cursor: pointer; white-space: nowrap;">
+            ⚡ START SELF-TEST
+          </button>
+        </div>
+
+        <div id="selfTestProgressCard" class="selftest-progress-card" style="display: none;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <span id="selfTestStageLabel" class="selftest-stage-label">
+              <span class="pulse-dot" style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); animation: pulse 1s infinite;"></span>
+              DIAGNOSTIC ACTIVE
+            </span>
+            <span id="selfTestTimerLabel" class="selftest-timer-pill">0.0s</span>
+          </div>
+          <div id="selfTestStatusDesc" class="selftest-status-desc">
+            Sending Report 33 instruction to UPS firmware controller...
+          </div>
+        </div>
+      </div>
+
+      <!-- Physical Procedure Guide -->
+      <div class="step-card-list">
+        <div style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">
+          📋 MANUAL PROCEDURE (TOP PANEL BUTTON BACKUP):
+        </div>
+        <div class="step-card">
+          <div class="step-number-badge">1</div>
+          <div class="step-text">
+            Ensure UPS is operating in normal On-Line status and connected to utility AC wall outlet.
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-number-badge">2</div>
+          <div class="step-text">
+            <strong>Press and hold the POWER button</strong> on the UPS top panel for <strong>6 seconds</strong>.
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-number-badge">3</div>
+          <div class="step-text">
+            Release the button immediately upon hearing the <strong>SECOND BEEP</strong>. The relay will engage battery power for ~10 seconds and return to AC line.
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="display: flex; justify-content: flex-end; padding-top: 0.5rem; border-top: 1px solid var(--border-subtle);">
+        <button id="btnModalCloseAction" class="btn-modal-action">CLOSE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Application Logic -->
+  <script src="js/three.min.js"></script>
+  <script src="js/reactor3d.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/tauri_bridge.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Initialize Theme Manager
+      const themeMgr = new ThemeManager();
+      
+      // 2. Initialize 3D WebGL Kinetic Reactor Core
+      const reactor = new Reactor3D('reactor3DCanvas');
+
+      // 3. Initialize Pure Real Hardware Telemetry Engine
+      const engine = new TelemetryEngine(reactor);
+      
+      // 4. Bind Unified Navigation Tabs
+      document.querySelectorAll('.std-tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.std-tab-btn').forEach(b => b.classList.remove('active'));
+          document.querySelectorAll('.std-tab-pane').forEach(p => p.classList.remove('active'));
+          
+          btn.classList.add('active');
+          const target = document.getElementById(btn.dataset.tab);
+          if (target) target.classList.add('active');
+          
+          if (btn.dataset.tab === 'tab-dashboard') {
+            window.dispatchEvent(new Event('resize'));
+            if (reactor && typeof reactor.resume === 'function') reactor.resume();
+          } else {
+            if (reactor && typeof reactor.pause === 'function') reactor.pause();
+          }
+
+          if (btn.dataset.tab === 'tab-overview' && engine && typeof engine.drawWaveform === 'function') {
+            engine.drawWaveform();
+          }
+
+          if (window.appBeeper) window.appBeeper.playClick(2100, 0.03);
+        });
+      });
+
+      // Bind Battery Tab Self-Test Button
+      const stdTestBtn = document.getElementById('stdBtnSelfTest');
+      if (stdTestBtn) {
+        stdTestBtn.addEventListener('click', () => {
+          engine.triggerSelfTest();
+        });
+      }
+
+      window.apcApp = { themeMgr, reactor, engine };
+    });
+  </script>
+</body>
+</html>

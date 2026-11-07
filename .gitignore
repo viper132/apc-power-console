@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
+venv/
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Edge User Data
+ApcReactorApp/
+
+# Distribution Archives
+*.zip
+*.exe
+
+# Frontend build distribution
+dist/
+
+# Tauri build artifacts
+
+src-tauri/target/
+

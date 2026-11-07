@@ -1,0 +1,7 @@
+src-tauri/
+backend/
+tests/
+.git/
+*.bat
+*.zip
+*.md
